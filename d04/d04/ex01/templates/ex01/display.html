@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} 
+    It ex01 : the Process of displaying a static page. 
+{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex01/style1.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1> Describe in this page of the process resulting in the display of astatic web page from a simple template from a view, of the request to the response </h1>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} 
+    It ex01: Django, web framework. 
+{% endblock %}
+
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex01/style1.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h1>Made in this page is a brief overview of Django and its history.</h1>
+{% endblock %}
