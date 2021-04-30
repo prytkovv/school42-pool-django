@@ -10,5 +10,10 @@
 {% endblock %}
 
 {% block content %}
-<h1> Describe in this page of the process resulting in the display of astatic web page from a simple template from a view, of the request to the response </h1>
+{% include "nav.html" %}
+<h1> How to work static web page view in django</h1>
+<ul>
+    <li>Django finds url in urlpatterns</li>
+    <li>Django finds view connected with this url</li>
+    <li>Django django finds html template passed to the render function and send the response</li>
 {% endblock %}

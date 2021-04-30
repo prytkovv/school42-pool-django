@@ -10,11 +10,29 @@ It ex01 : template Engine.
 {% endblock %}
 
 {% block content %}
-<h1>Describe in this page the operation of the engine tem-flat default Django as well as the operation :</h1>
+{% include "nav.html" %}
+<h1>Django template engine</h1>
 <ul>
-    <li>Blocks</li>
-    <li>Loops, for ... in</li>
-    <li>Control Structures the if</li>
-    <li>The display of the variables passed by context</li>
+    <li>
+        <h2>Blocks</h2>
+        <p>Defines a block that can be overridden by child templates.</p>
+    </li>
+    <li>
+        <h2>For ... in</h2>
+        <p>Loops over each item in an array, making the item available in a context variable.<p>
+    </li>
+    <li>
+        <h2>If</h2>
+        <p>
+            The if tag evaluates a variable, and if that variable is “true” (i.e. exists, is not empty, and is not a false boolean value) the contents of the block are output.
+        </p>
+        <p> The if tag may take one or several elif clauses, as well as an else clause that will be displayed if all previous conditions fail. These clauses are optional.</p>
+    </li>
+    <li>
+        <h2>Variables</h2>
+        <p>
+            When the template engine encounters a variable, it evaluates that variable and replaces it with the result. Variable names consist of any combination of alphanumeric characters and the underscore ("_") but may not start with an underscore, and may not be a number. The dot (".") also appears in variable sections, although that has a special meaning. Importantly, you cannot have spaces or punctuation characters in variable names.
+        </p>
+    </li>
 </ul>
 {% endblock %}
