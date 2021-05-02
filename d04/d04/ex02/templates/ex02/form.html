@@ -4,12 +4,41 @@
     ex02
 {% endblock %}
 
+{% block style %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex02/style.css' %}">
+{% endblock %}
+
 {%block content %}
-<div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
+<div class="split left">
+    <div class="centered">
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+<div class="split right">
+    <div class="centered">
+        <table>
+            {% if record_list %}
+                <tr>
+                {% for key in record_list.0.keys%}
+                    <th> {{key }} </th>
+                {% endfor %}
+                </tr>
+                    {% for record in record_list %}
+                    <tr>
+                        {% for value in record.values %}
+                            <td>{{value}}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+        </table>
+            {% else %}
+                <tr> History is empty </tr>
+            {% endif %}
+    </div>
 </div>
 {% endblock %}
