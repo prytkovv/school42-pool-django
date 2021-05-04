@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+    display
+{% endblock %}
+
+{% block style %}
+    {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'ex02/style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <table>
+        {% if rows %}
+            <tr>
+                {% for title in titles %}
+                    <th> {{ title }} </th>
+                {% endfor %}
+            </tr>
+                {% for row in rows %}
+                <tr>
+                    {% for item in row %}
+                        {% if item %}
+                            <td> {{ item }} </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+        {% else %}
+            <tr> No data available </tr>
+        {% endif %}
+{% endblock %}
+
