@@ -20,14 +20,28 @@ def init(request):
     dbconnection = psycopg2.connect(**dbconfig)
     try:
         cursor = dbconnection.cursor()
-        _SQL = """CREATE TABLE IF NOT EXISTS ex04_movies(
+        _SQL = """CREATE TABLE IF NOT EXISTS ex06_movies(
             title varchar(64) UNIQUE NOT NULL,
             episode_nb serial PRIMARY KEY,
             opening_crawl text,
             director varchar(32) NOT NULL,
             producer varchar(128) NOT NULL,
-            release_date date NOT NULL
-            )"""
+            release_date date NOT NULL,
+            created timestamp NOT NULL DEFAULT NOW(),
+            updated timestamp
+            );
+            CREATE OR REPLACE FUNCTION update_changetimestamp_column()
+            RETURNS TRIGGER AS $$
+            BEGIN
+            NEW.updated = now();
+            NEW.created = OLD.created;
+            RETURN NEW;
+            END;
+            $$ language 'plpgsql';
+            CREATE TRIGGER update_films_changetimestamp BEFORE UPDATE
+            ON ex06_movies FOR EACH ROW EXECUTE PROCEDURE
+            update_changetimestamp_column();
+            """
         cursor.execute(_SQL)
         dbconnection.commit()
         cursor.close()
@@ -106,7 +120,7 @@ def populate(request):
             for index in range(len(movies))]
         item_counter = 0
         for movie in movies:
-            _SQL = """INSERT INTO ex04_movies(
+            _SQL = """INSERT INTO ex06_movies(
                 title,
                 episode_nb,
                 director,
@@ -116,7 +130,7 @@ def populate(request):
                                   movie['episode_nb'],
                                   movie['director'],
                                   movie['producer'],
-                                  movie['release_date'],))
+                                  movie['release_date']))
             dbconnection.commit()
             result_list[item_counter].append('OK')
             item_counter += 1
@@ -134,7 +148,7 @@ def populate(request):
     else:
         return render(
             request,
-            'ex04/populate.html',
+            'ex06/populate.html',
             {'result_list': [i[1] for i in result_list]}
         )
     finally:
@@ -145,7 +159,7 @@ def display(request):
     dbconnection = psycopg2.connect(**dbconfig)
     try:
         cursor = dbconnection.cursor()
-        _SQL = """SELECT * from ex04_movies"""
+        _SQL = """SELECT * from ex06_movies"""
         cursor.execute(_SQL)
         contents = cursor.fetchall()
         cursor.close()
@@ -153,13 +167,15 @@ def display(request):
         return HttpResponse(str(e))
     else:
         return render(request,
-                      'ex04/display.html',
+                      'ex06/display.html',
                       {'titles': ('Title',
                                   'Episode Number',
                                   'Opening crawl',
                                   'Director',
                                   'Producer',
-                                  'Release date',),
+                                  'Release date',
+                                  'Created',
+                                  'Updated',),
                        'contents': contents})
     finally:
         dbconnection.close()
@@ -172,10 +188,10 @@ def remove(request):
         if request.method == 'POST':
             form = forms.MovieSelectionForm(request.POST)
             selected_movie_title = request.POST['titles']
-            _SQL = """DELETE FROM ex04_movies WHERE title=%s"""
+            _SQL = """DELETE FROM ex06_movies WHERE title=%s"""
             cursor.execute(_SQL, (selected_movie_title, ))
             dbconnection.commit()
-        _SQL = """SELECT title from ex04_movies"""
+        _SQL = """SELECT title from ex06_movies"""
         cursor.execute(_SQL)
         movie_titles = [''.join(title) for title in cursor.fetchall()]
         cursor.close()
@@ -183,7 +199,33 @@ def remove(request):
         if not movie_titles:
             return HttpResponse('No data available')
         return render(request,
-                      'ex04/remove.html',
+                      'ex06/remove.html',
+                      {'form': form})
+    except psycopg2.Error as e:
+        return HttpResponse(str(e))
+    finally:
+        dbconnection.close()
+
+
+def update(request):
+    dbconnection = psycopg2.connect(**dbconfig)
+    try:
+        cursor = dbconnection.cursor()
+        if request.method == 'POST':
+            form = forms.MovieUpdateForm(request.POST)
+            selected_movie_title = request.POST['titles']
+            crawling_text = request.POST['crawling_text']
+            _SQL = """UPDATE ex06_movies SET opening_crawl=%s WHERE title=%s"""
+            cursor.execute(_SQL, (crawling_text, selected_movie_title, ))
+        _SQL = """SELECT title from ex06_movies"""
+        cursor.execute(_SQL)
+        dbconnection.commit()
+        movie_titles = [''.join(title) for title in cursor.fetchall()]
+        cursor.close()
+        form = forms.MovieUpdateForm(
+            titles=movie_titles)
+        return render(request,
+                      'ex06/update.html',
                       {'form': form})
     except psycopg2.Error as e:
         return HttpResponse(str(e))

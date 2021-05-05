@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'ex03',
     'ex04',
     'ex05',
+    'ex06',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}
+    ex06 populate
+{% endblock %}
+
+
+{% block content %}
+    {% for item in result_list %}
+        {{ item }}<br>
+    {% endfor %}
+{% endblock %}
