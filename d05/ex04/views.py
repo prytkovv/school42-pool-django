@@ -15,7 +15,6 @@ dbconfig = {
     'database': 'formationdjango'
 }
 
-
 def init(request):
     dbconnection = psycopg2.connect(**dbconfig)
     try:
