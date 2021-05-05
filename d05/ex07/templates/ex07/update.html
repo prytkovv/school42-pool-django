@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    ex07 update
+{% endblock %}
+
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|linebreaks }}
+        <input type="submit" value="Update">
+    </form>
+{% endblock %}
