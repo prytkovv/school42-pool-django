@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    ex
+{% endblock %}
+
+
+{% block content %}
+    {% include "nav.html" %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="GO">
+    </form>
+{% endblock %}
