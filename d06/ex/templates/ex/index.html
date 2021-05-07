@@ -2,15 +2,32 @@
 
 
 {% block title %}
-    ex
+    Home
 {% endblock %}
 
 
 {% block content %}
     {% include "nav.html" %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="GO">
-    </form>
+    <ul>
+        {% if tips %}
+            <h1>Tips</h1>
+            {% for tip in tips %}
+                <li> 
+                    <p><strong>{{ tip.author }}</strong></p>
+                    <p>{{ tip.date }}</p>
+                    <p>{{ tip.content }}</p>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li> No data available </li>
+        {% endif %}
+        <h2>Tip creation menu</h2>
+        {% if form %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Create">
+        </form>
+        {% endif %}
+    </ul>
 {% endblock %}
