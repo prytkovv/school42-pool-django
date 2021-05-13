@@ -14,11 +14,13 @@
             {{ message }}
         </div>
         {% endfor %}
-    <div>
+
+    <div class="d-inline-flex p-2">
         <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="log in">
+            {% load bootstrap4 %}
+                {% csrf_token %}
+                {% bootstrap_form form layout='inline' %}
+            <input class="btn btn-dark" type="submit" value="log in">
         </form>
 </div>
 {% endblock %}

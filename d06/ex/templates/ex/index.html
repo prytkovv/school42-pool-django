@@ -8,26 +8,42 @@
 
 {% block content %}
     {% include "nav.html" %}
+    <div class="d-inline-flex p-2">
     <ul>
         {% if tips %}
             <h1>Tips</h1>
             {% for tip in tips %}
                 <li> 
-                    <p><strong>{{ tip.author }}</strong></p>
-                    <p>{{ tip.date }}</p>
-                    <p>{{ tip.content }}</p>
+                    <p><strong>Created by: </strong>{{ tip.author }}</p>
+                    <p><strong>Content: </strong>{{ tip.content }}</p>
+                    <p><strong>Publication date: </strong>{{ tip.date }}</p>
+                    <p><strong>Rating: </strong>{{ tip.get_tip_rating }}</p>
+                    {% if user.is_authenticated %}
+                        <p>
+                        <a class="btn btn-success" href="{% url 'upvote' tip.id %}">
+                            Upvote</a>
+                        <a class="btn btn-danger" href="{% url 'downvote' tip.id %}">
+                            Downvote</a>
+                        <a class="btn btn-primary" href="{% url 'delete' tip.id %}">
+                            Delete</a>
+                        </p>
+                    {% endif %}
                 </li>
             {% endfor %}
         {% else %}
             <li> No data available </li>
         {% endif %}
-        <h2>Tip creation menu</h2>
-        {% if form %}
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Create">
-        </form>
+
+        {% if user.is_authenticated %}
+            <h2>Tip creation menu</h2>
+            <form method="POST">
+                {% load bootstrap4 %}
+                {% csrf_token %}
+                {% bootstrap_form form layout='inline' %}
+                <input class="btn btn-dark" type="submit" value="Post">
+            </form>
         {% endif %}
     </ul>
+</div>
+
 {% endblock %}
