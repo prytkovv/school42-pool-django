@@ -1,8 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.contrib import messages
-from django.db import IntegrityError
 from django.views.generic.list import ListView
 from django.views.generic import FormView
 from django.views.generic.edit import ModelFormMixin
@@ -44,34 +42,18 @@ class IndexView(ListView, ModelFormMixin):
 
 def upvote_tip(request, tip_id):
 
-    try:
-        tip = models.Tip.objects.get(pk=tip_id)
-        user = request.user
-        tip.upvote(user)
-    except IntegrityError:
-        tip_vote = tip.vote_set.get(author=user)
-        if str(tip_vote) == 'UP':
-            tip_vote.delete()
-        else:
-            tip_vote.reverse_choice()
-    finally:
-        return redirect('index')
+    tip = models.Tip.objects.get(pk=tip_id)
+    user = request.user
+    tip.upvote(user)
+    return redirect('index')
 
 
 def downvote_tip(request, tip_id):
 
-    try:
-        tip = models.Tip.objects.get(pk=tip_id)
-        user = request.user
-        tip.downvote(user)
-    except IntegrityError:
-        tip_vote = tip.vote_set.get(author=user)
-        if str(tip_vote) == 'DN':
-            tip_vote.delete()
-        else:
-            tip_vote.reverse_choice()
-    finally:
-        return redirect('index')
+    tip = models.Tip.objects.get(pk=tip_id)
+    user = request.user
+    tip.downvote(user)
+    return redirect('index')
 
 
 def delete_tip(request, tip_id):
@@ -85,7 +67,7 @@ class LoginView(FormView):
 
     template_name = 'ex/login.html'
     form_class = forms.LoginForm
-    success_url = '.'
+    success_url = '/'
 
     def get_context_data(self, **kwargs):
         context = super(LoginView, self).get_context_data(**kwargs)
@@ -97,21 +79,18 @@ class LoginView(FormView):
         user = auth.authenticate(
             username=context.get('username'),
             password=context.get('password'))
-        if user:
-            if user.is_active:
-                auth.login(self.request, user)
-                return redirect('index')
-        else:
-            messages.error(self.request,
-                           'Username or password is not correct')
-            return super(LoginView, self).form_valid(form)
+        auth.login(self.request, user)
+        return super(LoginView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return super(LoginView, self).form_invalid(form)
 
 
 class SignupView(FormView):
 
     template_name = 'ex/signup.html'
     form_class = forms.SignupForm
-    success_url = '.'
+    success_url = '/'
 
     def get_context_data(self, **kwargs):
         context = super(SignupView, self).get_context_data(**kwargs)
@@ -120,17 +99,15 @@ class SignupView(FormView):
 
     def form_valid(self, form):
         context = form.cleaned_data
-        try:
-            user = User.objects.create_user(
-                username=context.get('username'),
-                password=context.get('password'))
-            user.save()
-            auth.login(self.request, user)
-        except IntegrityError:
-            messages.error(self.request, 'Username is not available')
-            return super(SignupView, self).form_valid(form)
-        else:
-            return redirect('index')
+        user = User.objects.create_user(
+            username=context.get('username'),
+            password=context.get('password1'))
+        user.save()
+        auth.login(self.request, user)
+        return super(SignupView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        return super(SignupView, self).form_invalid(form)
 
 
 def logout(request):
