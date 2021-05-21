@@ -29,7 +29,7 @@ class Tip(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
 
-    def get_tip_rating(self):
+    def get_rating(self):
         return self.vote_set.filter(
             choice='+').count() - self.vote_set.filter(choice='-').count()
 

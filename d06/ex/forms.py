@@ -10,11 +10,11 @@ class LoginForm(forms.Form):
 
     username = forms.CharField(
         max_length=50,
-        label='Enter username')
+        label='Username')
     password = forms.CharField(
         max_length=50,
         widget=forms.PasswordInput(),
-        label='Enter password')
+        label='Password')
 
     def clean(self):
         context = self.cleaned_data
@@ -22,7 +22,7 @@ class LoginForm(forms.Form):
             username=context.get('username'),
             password=context.get('password'))
         if not user or not user.is_active:
-            raise forms.ValidationError('User does not exist')
+            raise forms.ValidationError('Incorrect username or password.')
         return context
 
 
@@ -30,29 +30,30 @@ class SignupForm(forms.Form):
 
     username = forms.CharField(
         max_length=50,
-        label='Enter username')
+        label='Username')
     password1 = forms.CharField(
         max_length=50,
         widget=forms.PasswordInput(),
-        label='Enter password')
+        label='Password')
     password2 = forms.CharField(
         max_length=50,
         widget=forms.PasswordInput(),
-        label='Enter password again')
+        label='Repeat password')
 
     def clean_password2(self):
         context = self.cleaned_data
         password1 = context.get('password1')
         password2 = context.get('password2')
         if password1 != password2:
-            raise forms.ValidationError('Passwords are not equal')
+            raise forms.ValidationError('Passwords are not equal.')
         return password2
 
     def clean_username(self):
         cleaned_username = self.cleaned_data.get('username')
         if User.objects.filter(username=cleaned_username).exists():
-            raise forms.ValidationError('Username is already taken')
+            raise forms.ValidationError('Username is already taken.')
         return cleaned_username
+
 
 class TipForm(ModelForm):
 

@@ -5,45 +5,68 @@
     Home
 {% endblock %}
 
+{% block style %}
+    {% load static %}
+    {% load bootstrap4 %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex/style.css' %}">
+{% endblock %}
 
 {% block content %}
     {% include "nav.html" %}
-    <div class="d-inline-flex p-2">
-    <ul>
+    <div style="padding-left: 50px">
         {% if tips %}
             <h1>Tips</h1>
-            {% for tip in tips %}
-                <li> 
-                    <p><strong>Created by: </strong>{{ tip.author }}</p>
-                    <p><strong>Content: </strong>{{ tip.content }}</p>
-                    <p><strong>Publication date: </strong>{{ tip.date }}</p>
-                    <p><strong>Rating: </strong>{{ tip.get_tip_rating }}</p>
-                    {% if user.is_authenticated %}
-                        <p>
-                        <a class="btn btn-success" href="{% url 'upvote' tip.id %}">
-                            Upvote</a>
-                        <a class="btn btn-danger" href="{% url 'downvote' tip.id %}">
-                            Downvote</a>
-                        <a class="btn btn-primary" href="{% url 'delete' tip.id %}">
-                            Delete</a>
-                        </p>
-                    {% endif %}
-                </li>
-            {% endfor %}
+            <table>
+                {% for tip in tips %}
+                    <tr>
+                        <th>Created by: </th>
+                        <td>{{ tip.author }}</td>
+                    </tr>
+                    <tr>
+                        <th>Content: </th>
+                        <td>{{ tip.content }}</td>
+                    </tr>
+                    <tr>
+                        <th>Publication date: </th>
+                        <td>{{ tip.date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Rating: </th>
+                        <td>{{ tip.get_rating }}</td>
+                    </tr>
+                        {% if user.is_authenticated %}
+                            <tr>
+                                <th>
+                                    <a class="btn btn-success btn-sm" href="{% url 'upvote' tip.id %}">
+                                        +</a>
+                                    <a class="btn btn-danger btn-sm" href="{% url 'downvote' tip.id %}">
+                                        -</a></td>
+                                    <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
+                                        Delete</a>
+                                </th>
+                            </tr>
+                        {% endif %}
+                    <tr>
+                        <td><br></td>
+                    </tr>
+                {% endfor %}
         {% else %}
-            <li> No data available </li>
+            <tr>
+                <th>No data available</th>
+            </tr>
         {% endif %}
+            </table>
 
+        <div style="width: 390px;">
         {% if user.is_authenticated %}
-            <h2>Tip creation menu</h2>
+            <h1>Tip creation menu</h1>
             <form method="POST">
-                {% load bootstrap4 %}
                 {% csrf_token %}
                 {% bootstrap_form form layout='inline' %}
-                <input class="btn btn-dark" type="submit" value="Post">
+                <input class="btn btn-primary" type="submit" value="Post">
             </form>
         {% endif %}
-    </ul>
-</div>
+        </div>
+    </div>
 
 {% endblock %}

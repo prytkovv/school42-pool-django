@@ -2,25 +2,27 @@
 
 
 {% block title %}
-    Login
+    Log in
+{% endblock %}
+
+{% block style %}
+    {% load static %}
+    {% load bootstrap4 %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex/style.css' %}">
 {% endblock %}
 
 
 {% block content %}
     {% include "nav.html" %}
-    {% for message in messages %}
-        <div class="alert alert-success">
-            <a class="close" href="#" data-dismiss="alert"></a>
-            {{ message }}
-        </div>
-        {% endfor %}
-
-    <div class="d-inline-flex p-2">
-        <form method="POST">
-            {% load bootstrap4 %}
-                {% csrf_token %}
-                {% bootstrap_form form layout='inline' %}
-            <input class="btn btn-dark" type="submit" value="log in">
+    <div class="auth-form">
+        <form method="post">
+            {% csrf_token %}
+            <h2>Log in</h2>
+            {% bootstrap_form form %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg">Log in</button>
+            </div>
         </form>
-</div>
+        <div class="hint-text">Don't have an account? <a href="{% url 'signup' %}" class="nav-link">Sign up</a></div>
+    </div>
 {% endblock %}

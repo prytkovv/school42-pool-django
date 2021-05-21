@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.views.generic.list import ListView
 from django.views.generic import FormView
 from django.views.generic.edit import ModelFormMixin
+from django.contrib.auth.decorators import permission_required, login_required
 
 
 from . import forms
@@ -56,6 +57,8 @@ def downvote_tip(request, tip_id):
     return redirect('index')
 
 
+@login_required
+@permission_required('polls.can_vote', raise_exception=True)
 def delete_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
@@ -68,6 +71,11 @@ class LoginView(FormView):
     template_name = 'ex/login.html'
     form_class = forms.LoginForm
     success_url = '/'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('index')
+        return super(LoginView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(LoginView, self).get_context_data(**kwargs)
@@ -91,6 +99,11 @@ class SignupView(FormView):
     template_name = 'ex/signup.html'
     form_class = forms.SignupForm
     success_url = '/'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('index')
+        return super(SignupView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(SignupView, self).get_context_data(**kwargs)
