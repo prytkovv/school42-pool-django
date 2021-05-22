@@ -13,47 +13,58 @@
 
 {% block content %}
     {% include "nav.html" %}
-    <div style="padding-left: 50px">
+    <div class="content">
         {% if tips %}
-            <h1>Tips</h1>
-            <table>
+            <h1>Published tips</h1>
                 {% for tip in tips %}
-                    <tr>
-                        <td colspan="3">{{ tip.content }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ tip.date }}</td>
-                        <th colspan="2" style="text-align:right;">{{ tip.author }}</th>
-                    </tr>
-                    <tr>
-                        <th>Rating: {{ tip.get_rating }}</th>
-                        <td>
-                            <a class="btn btn-success btn-sm" href="{% url 'upvote' tip.id %}">
-                                +</a>
-                            <a class="btn btn-danger btn-sm" href="{% url 'downvote' tip.id %}">
-                                -</a>
-                            <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
-                                Delete</a>
-                        </td>
-                        </tr>
-                    <tr>
-                        <td><br></td>
-                    </tr>
+                    <table class="table">
+                      <thead class="thead-light">
+                            <tr>
+                                <th class="left-side">
+                                    {{ tip.author }}
+                                </th>
+                                <th class="right-side"> {{ tip.date }} </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="left-side"> 
+                                    {% if tip.author.is_superuser %}
+                                        <p style="color:#cc0000"><strong>admin</strong></p>
+                                    {% elif tip.author.is_staff %}
+                                        <p style="color:#9900cc"><strong>staff</strong></p>
+                                    {% else %}
+                                        <p style="color:#007acc"><strong>user</strong></p>
+                                    {% endif %}
+                                    <a class="btn btn-success btn-sm custom-btn-size" href="{% url 'upvote' tip.id %}">
+                                    +</a>
+                                    {{ tip.get_rating }}
+                                    <a class="btn btn-danger btn-sm custom-btn-size" href="{% url 'downvote' tip.id %}">
+                                        -</a>
+                                    <div style="padding:10px">
+                                        {% if user == tip.author or user.is_staff %}
+                                            <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
+                                                delete</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td> {{ tip.content }} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                 {% endfor %}
         {% else %}
-            <tr>
-                <th>No data available</th>
-            </tr>
+            <p><strong>No data available</strong></p>
         {% endif %}
-            </table>
 
-        <div style="width: 390px;">
+        <div class="creation-form"">
         {% if user.is_authenticated %}
-            <h1>Tip creation menu</h1>
+            <h1>Create new tip</h1>
             <form method="POST">
                 {% csrf_token %}
                 {% bootstrap_form form layout='inline' %}
-                <input class="btn btn-primary" type="submit" value="Post">
+                <input class="btn btn-primary" type="submit" value="Post your tip">
             </form>
         {% endif %}
         </div>

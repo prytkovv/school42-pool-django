@@ -50,7 +50,6 @@ class Tip(models.Model):
 
     def downvote(self, voter):
         try:
-            self = self
             vote = Vote.objects.create(
                 author=voter,
                 tip=self,
@@ -63,6 +62,10 @@ class Tip(models.Model):
                 vote.delete()
             else:
                 vote.reverse_choice()
+
+    def remove(self, voter):
+        if voter == self.author or voter.is_staff:
+            self.delete()
 
     def __str__(self):
         return self.content

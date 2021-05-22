@@ -61,3 +61,6 @@ class TipForm(ModelForm):
 
         model = models.Tip
         fields = ['content']
+        labels = {
+            'content': 'Input tip text here',
+        }

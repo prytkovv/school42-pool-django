@@ -37,7 +37,6 @@ class IndexView(ListView, ModelFormMixin):
     def get_context_data(self, *args, **kwargs):
         context = super(IndexView, self).get_context_data(*args, **kwargs)
         context['form'] = self.form
-        context['username'] = self.request.user
         return context
 
 
@@ -45,8 +44,7 @@ class IndexView(ListView, ModelFormMixin):
 def upvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
-    user = request.user
-    tip.upvote(user)
+    tip.upvote(request.user)
     return redirect('index')
 
 
@@ -54,8 +52,7 @@ def upvote_tip(request, tip_id):
 def downvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
-    user = request.user
-    tip.downvote(user)
+    tip.downvote(request.user)
     return redirect('index')
 
 
@@ -63,7 +60,7 @@ def downvote_tip(request, tip_id):
 def delete_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
-    tip.delete()
+    tip.remove(request.user)
     return redirect('index')
 
 
@@ -80,7 +77,6 @@ class LoginView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(LoginView, self).get_context_data(**kwargs)
-        context['username'] = self.request.user
         return context
 
     def form_valid(self, form):
@@ -108,7 +104,6 @@ class SignupView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(SignupView, self).get_context_data(**kwargs)
-        context['username'] = self.request.user
         return context
 
     def form_valid(self, form):

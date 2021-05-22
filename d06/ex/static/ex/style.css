@@ -3,7 +3,6 @@ body {
     padding-bottom: 65px;
 }
 
-
 .form-control {
     height: 41px;
     background: #f2f2f2;
@@ -72,4 +71,34 @@ body {
     color: #333;
     padding-bottom: 15px;
     text-align: center;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+.creation-form {
+    width: 100%;
+}
+
+.content {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.tip-table {
+    width: 100%;
+}
+
+.left-side {
+    width: 200px;
+    text-align: center;
+}
+
+.right-side {
+    text-align: right;
+}
+
+.custom-btn-size {
+    width: 30px !important;
 }
