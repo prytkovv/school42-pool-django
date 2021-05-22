@@ -4,7 +4,7 @@ from django.contrib import auth
 from django.views.generic.list import ListView
 from django.views.generic import FormView
 from django.views.generic.edit import ModelFormMixin
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 
 
 from . import forms
@@ -41,6 +41,7 @@ class IndexView(ListView, ModelFormMixin):
         return context
 
 
+@login_required(login_url='/login/')
 def upvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
@@ -49,6 +50,7 @@ def upvote_tip(request, tip_id):
     return redirect('index')
 
 
+@login_required(login_url='/login/')
 def downvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
@@ -57,8 +59,7 @@ def downvote_tip(request, tip_id):
     return redirect('index')
 
 
-@login_required
-@permission_required('polls.can_vote', raise_exception=True)
+@login_required(login_url='/login/')
 def delete_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)

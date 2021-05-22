@@ -19,33 +19,23 @@
             <table>
                 {% for tip in tips %}
                     <tr>
-                        <th>Created by: </th>
-                        <td>{{ tip.author }}</td>
+                        <td colspan="3">{{ tip.content }}</td>
                     </tr>
                     <tr>
-                        <th>Content: </th>
-                        <td>{{ tip.content }}</td>
-                    </tr>
-                    <tr>
-                        <th>Publication date: </th>
                         <td>{{ tip.date }}</td>
+                        <th colspan="2" style="text-align:right;">{{ tip.author }}</th>
                     </tr>
                     <tr>
-                        <th>Rating: </th>
-                        <td>{{ tip.get_rating }}</td>
-                    </tr>
-                        {% if user.is_authenticated %}
-                            <tr>
-                                <th>
-                                    <a class="btn btn-success btn-sm" href="{% url 'upvote' tip.id %}">
-                                        +</a>
-                                    <a class="btn btn-danger btn-sm" href="{% url 'downvote' tip.id %}">
-                                        -</a></td>
-                                    <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
-                                        Delete</a>
-                                </th>
-                            </tr>
-                        {% endif %}
+                        <th>Rating: {{ tip.get_rating }}</th>
+                        <td>
+                            <a class="btn btn-success btn-sm" href="{% url 'upvote' tip.id %}">
+                                +</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'downvote' tip.id %}">
+                                -</a>
+                            <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
+                                Delete</a>
+                        </td>
+                        </tr>
                     <tr>
                         <td><br></td>
                     </tr>

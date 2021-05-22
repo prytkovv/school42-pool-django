@@ -8,8 +8,8 @@ class Vote(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     tip = models.ForeignKey('Tip', on_delete=models.CASCADE)
     choice = models.CharField(max_length=1, choices=[
-        ('+', 'UPVOTE'),
-        ('-', 'DOWNVOTE'),
+        ('+', 'UP'),
+        ('-', 'DOWN'),
     ])
 
     class Meta:
@@ -34,16 +34,15 @@ class Tip(models.Model):
             choice='+').count() - self.vote_set.filter(choice='-').count()
 
     def upvote(self, voter):
-        self_tip = self
         try:
             vote = Vote.objects.create(
                 author=voter,
-                tip=self_tip,
+                tip=self,
                 choice='+')
-            self_tip.vote_set.add(vote)
-            self_tip.save()
+            self.vote_set.add(vote)
+            self.save()
         except IntegrityError:
-            vote = self_tip.vote_set.get(author=voter)
+            vote = self.vote_set.get(author=voter)
             if str(vote) == '+':
                 vote.delete()
             else:
@@ -51,15 +50,15 @@ class Tip(models.Model):
 
     def downvote(self, voter):
         try:
-            self_tip = self
+            self = self
             vote = Vote.objects.create(
                 author=voter,
-                tip=self_tip,
+                tip=self,
                 choice='-')
-            self_tip.vote_set.add(vote)
-            self_tip.save()
+            self.vote_set.add(vote)
+            self.save()
         except IntegrityError:
-            vote = self_tip.vote_set.get(author=voter)
+            vote = self.vote_set.get(author=voter)
             if str(vote) == '-':
                 vote.delete()
             else:

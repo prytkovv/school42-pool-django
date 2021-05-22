@@ -1,6 +1,8 @@
 body {
     padding-top: 65px;
+    padding-bottom: 65px;
 }
+
 
 .form-control {
     height: 41px;
@@ -31,7 +33,7 @@ body {
     padding: 30px;
 }
 
-.auth-form h1, h2 {
+.auth-form h2 {
     color: #333;
     font-weight: bold;
     margin-top: 0;
