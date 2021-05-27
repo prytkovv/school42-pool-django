@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic import FormView
 from django.views.generic.edit import ModelFormMixin, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 
 from . import forms
@@ -63,12 +64,24 @@ class TipUpdateView(UpdateView):
     template_name_suffix = '_update_form'
     success_url = '/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().author == request.user or request.user.is_staff:
+            return super(
+                TipUpdateView, self).dispatch(request, *args, **kwargs)
+        else:
+            raise Http404
 
 class TipDeleteView(DeleteView):
 
     model = models.Tip
     success_url = '/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if self.get_object().author == request.user or request.user.is_staff:
+            return super(
+                TipDeleteView, self).dispatch(request, *args, **kwargs)
+        else:
+            raise Http404
 
 class LoginView(FormView):
 
