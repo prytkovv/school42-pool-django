@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views.generic.list import ListView
 from django.views.generic import FormView
-from django.views.generic.edit import ModelFormMixin
+from django.views.generic.edit import ModelFormMixin, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 
 
@@ -40,7 +40,7 @@ class IndexView(ListView, ModelFormMixin):
         return context
 
 
-@login_required(login_url='/login/')
+@login_required
 def upvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
@@ -48,7 +48,7 @@ def upvote_tip(request, tip_id):
     return redirect('index')
 
 
-@login_required(login_url='/login/')
+@login_required
 def downvote_tip(request, tip_id):
 
     tip = models.Tip.objects.get(pk=tip_id)
@@ -56,12 +56,18 @@ def downvote_tip(request, tip_id):
     return redirect('index')
 
 
-@login_required(login_url='/login/')
-def delete_tip(request, tip_id):
+class TipUpdateView(UpdateView):
 
-    tip = models.Tip.objects.get(pk=tip_id)
-    tip.remove(request.user)
-    return redirect('index')
+    model = models.Tip
+    fields = ['content']
+    template_name_suffix = '_update_form'
+    success_url = '/'
+
+
+class TipDeleteView(DeleteView):
+
+    model = models.Tip
+    success_url = '/'
 
 
 class LoginView(FormView):
@@ -119,6 +125,7 @@ class SignupView(FormView):
         return super(SignupView, self).form_invalid(form)
 
 
+@login_required
 def logout(request):
     auth.logout(request)
     return redirect('index')

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Delete
+{% endblock %}
+
+{% block style %}
+    {% load static %}
+    {% load bootstrap4 %}
+    <link rel="stylesheet" type="text/css" href="{% static 'ex/style.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% include "nav.html" %}
+    <div class="content">
+        <form method="POST">
+            {% csrf_token %}
+            <p>Are you sure want to delete this tip?</p>
+            <input class="btn btn-primary" type="submit" value="Confirm">
+            <a class="btn btn-light" href="{% url 'index' %}">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

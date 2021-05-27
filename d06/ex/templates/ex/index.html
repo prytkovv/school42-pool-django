@@ -15,8 +15,9 @@
     {% include "nav.html" %}
     <div class="content">
         {% if tips %}
-            <h1>Published tips</h1>
+            <h1 class="main-title">Published tips</h1>
                 {% for tip in tips %}
+                    {{ tip.id }}
                     <table class="table">
                       <thead class="thead-light">
                             <tr>
@@ -41,15 +42,17 @@
                                     {{ tip.get_rating }}
                                     <a class="btn btn-danger btn-sm custom-btn-size" href="{% url 'downvote' tip.id %}">
                                         -</a>
-                                    <div style="padding:10px">
-                                        {% if user == tip.author or user.is_staff %}
-                                            <a class="btn btn-info btn-sm" href="{% url 'delete' tip.id %}">
-                                                delete</a>
-                                        {% endif %}
-                                    </div>
                                 </td>
                                 <td> {{ tip.content }} </td>
                             </tr>
+                            {% if user == tip.author or user.is_staff %}
+                                <tr>
+                                    <td class="right-side" colspan="2">
+                                            <a href="{% url 'edit' tip.id %}">edit</a>
+                                            <a href="{% url 'delete' tip.id %}">delete</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                     <br>
@@ -58,9 +61,9 @@
             <p><strong>No data available</strong></p>
         {% endif %}
 
-        <div class="creation-form"">
+        <div class="creation-form">
         {% if user.is_authenticated %}
-            <h1>Create new tip</h1>
+            <h1 class="main-title">Create a new tip</h1>
             <form method="POST">
                 {% csrf_token %}
                 {% bootstrap_form form layout='inline' %}

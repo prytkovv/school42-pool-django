@@ -63,9 +63,5 @@ class Tip(models.Model):
             else:
                 vote.reverse_choice()
 
-    def remove(self, voter):
-        if voter == self.author or voter.is_staff:
-            self.delete()
-
     def __str__(self):
         return self.content
