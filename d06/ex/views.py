@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.views.generic.list import ListView
@@ -42,17 +42,17 @@ class IndexView(ListView, ModelFormMixin):
 
 
 @login_required
-def upvote_tip(request, tip_id):
+def upvote(request, tip_id):
 
-    tip = models.Tip.objects.get(pk=tip_id)
+    tip = get_object_or_404(models.Tip, pk=tip_id)
     tip.upvote(request.user)
     return redirect('index')
 
 
 @login_required
-def downvote_tip(request, tip_id):
+def downvote(request, tip_id):
 
-    tip = models.Tip.objects.get(pk=tip_id)
+    tip = get_object_or_404(models.Tip, pk=tip_id)
     tip.downvote(request.user)
     return redirect('index')
 
