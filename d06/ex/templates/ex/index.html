@@ -14,10 +14,16 @@
 {% block content %}
     {% include "nav.html" %}
     <div class="content">
+        <script>
+            {% if messages %}
+                {% for message in messages %}
+                    alert('{{message}}')
+                {% endfor %}
+            {% endif %}
+        </script>
         {% if tips %}
             <h1 class="main-title">Published tips</h1>
                 {% for tip in tips %}
-                    {{ tip.id }}
                     <table class="table">
                       <thead class="thead-light">
                             <tr>

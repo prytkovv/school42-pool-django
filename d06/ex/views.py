@@ -6,6 +6,7 @@ from django.views.generic import FormView
 from django.views.generic.edit import ModelFormMixin, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.contrib import messages
 
 
 from . import forms
@@ -33,7 +34,7 @@ class IndexView(ListView, ModelFormMixin):
             self.object.author = self.request.user
             self.object.save()
 
-        return self.get(request, *args, **kwargs)
+        return redirect('index')
 
     def get_context_data(self, *args, **kwargs):
         context = super(IndexView, self).get_context_data(*args, **kwargs)
@@ -45,7 +46,16 @@ class IndexView(ListView, ModelFormMixin):
 def upvote(request, tip_id):
 
     tip = get_object_or_404(models.Tip, pk=tip_id)
-    tip.upvote(request.user)
+    this_user_upvote = tip.user_upvotes.filter(id=request.user.id).count()
+    this_user_downvote = tip.user_downvotes.filter(id=request.user.id).count()
+    if not this_user_upvote and not this_user_downvote:
+        tip.user_upvotes.add(request.user)
+    elif this_user_upvote == 1:
+        tip.user_upvotes.remove(request.user)
+    elif this_user_downvote == 1:
+        messages.error(request, 'Cancel your vote to recall')
+    else:
+        messages.error(request, 'An unknown error occured')
     return redirect('index')
 
 
@@ -53,7 +63,16 @@ def upvote(request, tip_id):
 def downvote(request, tip_id):
 
     tip = get_object_or_404(models.Tip, pk=tip_id)
-    tip.downvote(request.user)
+    this_user_upvote = tip.user_upvotes.filter(id=request.user.id).count()
+    this_user_downvote = tip.user_downvotes.filter(id=request.user.id).count()
+    if not this_user_upvote and not this_user_downvote:
+        tip.user_downvotes.add(request.user)
+    elif this_user_downvote == 1:
+        tip.user_downvotes.remove(request.user)
+    elif this_user_upvote == 1:
+        messages.error(request, 'Cancel your vote to recall')
+    else:
+        messages.error(request, 'An unknown error occured')
     return redirect('index')
 
 

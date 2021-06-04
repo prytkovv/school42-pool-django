@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Tip(models.Model):
 
     content = models.TextField()
@@ -14,16 +13,6 @@ class Tip(models.Model):
 
     def get_rating(self):
         return self.user_upvotes.count() - self.user_downvotes.count()
-
-    def upvote(self, voter):
-        this_user_upvotes = self.user_upvotes.filter(id=voter.id)
-        this_user_downvotes = self.user_downvotes.filter(id=voter.id)
-        print(this_user_upvotes)
-        print(this_user_downvotes)
-        self.user_upvotes.add(voter)
-
-    def downvote(self, voter):
-        self.user_downvotes.add(voter)
 
     def __str__(self):
         return self.content
