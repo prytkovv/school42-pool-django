@@ -1,17 +1,16 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top">
     <div class="d-flex flex-grow-1">
         <span class="w-100 d-lg-none d-block"></span>
         <a class="navbar-brand" href="/">
             Hello, {{ user }}!
         </a>
         <div class="w-100 text-right">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar7">
+            <button class="navbar-toggler" type="button" data-toggle="collapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </div>
-    <div class="collapse navbar-collapse flex-grow-1 text-right">
-        <ul class="navbar-nav ml-auto flex-nowrap">
+        <ul class="navbar-nav mr-auto flex-nowrap">
             {% if not user.is_authenticated %} 
                 <li class="nav-item">
                     <a href="{% url 'login' %}" class="nav-link">Log in</a>
@@ -25,5 +24,4 @@
                 </li>
             {% endif %}
         </ul>
-    </div>
 </nav>

@@ -4,7 +4,7 @@ body {
 }
 
 .main-title {
-    padding-bottom: 35px;
+    margin-bottom: 35px;
     text-align: center;
 }
 
@@ -87,8 +87,8 @@ table, th, td {
 }
 
 .content {
-    padding-left: 50px;
-    padding-right: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .tip-table {

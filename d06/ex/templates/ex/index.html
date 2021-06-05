@@ -1,26 +1,24 @@
 {% extends "base.html" %}
 
 
-{% block title %}
-    Home
-{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block style %}
     {% load static %}
     {% load bootstrap4 %}
     <link rel="stylesheet" type="text/css" href="{% static 'ex/style.css' %}">
 {% endblock %}
-
 {% block content %}
     {% include "nav.html" %}
     <div class="content">
-        <script>
-            {% if messages %}
-                {% for message in messages %}
-                    alert('{{message}}')
-                {% endfor %}
-            {% endif %}
-        </script>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">
+                    <a class="close" href="#" data-dismiss="alert">×</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
         {% if tips %}
             <h1 class="main-title">Published tips</h1>
                 {% for tip in tips %}
@@ -66,7 +64,6 @@
         {% else %}
             <p><strong>No data available</strong></p>
         {% endif %}
-
         <div class="creation-form">
         {% if user.is_authenticated %}
             <h1 class="main-title">Create a new tip</h1>
@@ -78,5 +75,4 @@
         {% endif %}
         </div>
     </div>
-
 {% endblock %}

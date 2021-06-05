@@ -44,35 +44,15 @@ class IndexView(ListView, ModelFormMixin):
 
 @login_required
 def upvote(request, tip_id):
-
     tip = get_object_or_404(models.Tip, pk=tip_id)
-    this_user_upvote = tip.user_upvotes.filter(id=request.user.id).count()
-    this_user_downvote = tip.user_downvotes.filter(id=request.user.id).count()
-    if not this_user_upvote and not this_user_downvote:
-        tip.user_upvotes.add(request.user)
-    elif this_user_upvote == 1:
-        tip.user_upvotes.remove(request.user)
-    elif this_user_downvote == 1:
-        messages.error(request, 'Cancel your vote to recall')
-    else:
-        messages.error(request, 'An unknown error occured')
+    messages.info(request, tip.upvote(request.user))
     return redirect('index')
 
 
 @login_required
 def downvote(request, tip_id):
-
     tip = get_object_or_404(models.Tip, pk=tip_id)
-    this_user_upvote = tip.user_upvotes.filter(id=request.user.id).count()
-    this_user_downvote = tip.user_downvotes.filter(id=request.user.id).count()
-    if not this_user_upvote and not this_user_downvote:
-        tip.user_downvotes.add(request.user)
-    elif this_user_downvote == 1:
-        tip.user_downvotes.remove(request.user)
-    elif this_user_upvote == 1:
-        messages.error(request, 'Cancel your vote to recall')
-    else:
-        messages.error(request, 'An unknown error occured')
+    messages.info(request, tip.downvote(request.user))
     return redirect('index')
 
 
