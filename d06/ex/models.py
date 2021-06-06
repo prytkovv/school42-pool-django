@@ -3,92 +3,77 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 
 
-VOTE_ACTIONS = {
-    'UP': 1,
-    'DOWN': 0,
-}
-
-
 class Tip(models.Model):
 
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    publication_date = models.DateField(auto_now_add=True)
 
-    def upvote(self, voter):
-        if self.votes.filter(action=VOTE_ACTIONS['DOWN']):
-            return 'You are already downvoted'
-        else:
-            try:
-                vote = Vote.objects.create(
-                    user=voter,
-                    tip=self,
-                    action=VOTE_ACTIONS['UP'])
-                self.votes.add(vote)
-                author_profile = self.author.profile
-                author_profile.reputation += 5
-                author_profile.save()
-            except IntegrityError:
-                vote = self.votes.get(
-                    user=voter,
-                    tip=self,
-                    action=VOTE_ACTIONS['UP'])
-                author_profile = self.author.profile
-                author_profile.reputation -= 5
-                author_profile.save()
-                vote.delete()
-                return 'Voting canceled'
-            else:
-                return 'Succesfully voted'
-
-    def downvote(self, voter):
-        if self.votes.filter(action=VOTE_ACTIONS['UP']):
-            return 'You are already upvoted'
+    def vote(self, voter, action):
+        author = self.author.profile
         try:
-            vote = Vote.objects.create(
-                user=voter,
-                tip=self,
-                action=VOTE_ACTIONS['DOWN'])
-            self.votes.add(vote)
-            author_profile = self.author.profile
-            author_profile.reputation -= 2
-            author_profile.save()
+            try:
+                vote = Vote.objects.get(
+                    voter=voter,
+                    tip=self)
+                if vote.action == action:
+                    if vote.action == Vote.UP:
+                        author.reputation -= 5
+                    else:
+                        author.reputation += 2
+                    vote.delete()
+                    return 'Vote canceled'
+                return 'Already voted'
+            except Vote.DoesNotExist:
+                new_vote = Vote.objects.create(
+                    voter=voter,
+                    tip=self,
+                    action=action)
+                self.votes.add(new_vote)
+                if new_vote.action == Vote.UP:
+                    author.reputation += 5
+                else:
+                    author.reputation -= 2
+                return 'Success'
+            finally:
+                author.save()
         except IntegrityError:
-            vote = self.votes.get(
-                user=voter,
-                tip=self,
-                action=VOTE_ACTIONS['DOWN'])
-            author_profile = self.author.profile
-            author_profile.reputation += 2
-            author_profile.save()
-            vote.delete()
-            return 'Voting canceled'
-        else:
-            return 'Successfully voted'
+            return 'Unknown error'
 
-    def get_rating(self):
+    @property
+    def score(self):
         return (self.votes.filter(
-            action=VOTE_ACTIONS['UP']).count() - self.votes.filter(
-            action=VOTE_ACTIONS['DOWN']).count())
+            action=Vote.UP).count() - self.votes.filter(
+            action=Vote.DOWN).count())
 
     def __str__(self):
         return self.content
 
+    class Meta:
+        permissions = [('downvote', 'Can down vote')]
+
 
 class Vote(models.Model):
 
-    user = models.ForeignKey(
+    DOWN = 0
+    UP = 1
+    ACTIONS = (
+        (DOWN, 'downvote'),
+        (UP, 'upvote'),
+    )
+
+    voter = models.ForeignKey(
         User, on_delete=models.CASCADE)
     tip = models.ForeignKey(
         Tip, on_delete=models.CASCADE, related_name='votes')
-    action = models.PositiveSmallIntegerField(blank=True)
+    action = models.PositiveSmallIntegerField(
+        blank=True, choices=ACTIONS)
 
     def __str__(self):
-        # change this
-        return 'UP' if self.action else 'DOWN'
+        return self.get_action_display()
 
     class Meta:
-        unique_together = ('user', 'tip', 'action')
+        unique_together = ('voter', 'tip')
 
 
 class Profile(models.Model):

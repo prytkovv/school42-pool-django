@@ -1,24 +1,23 @@
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib import auth, messages
 from django.contrib.auth.models import User
-from django.contrib import auth
-from django.views.generic.list import ListView
 from django.views.generic import FormView
+from django.views.generic.list import ListView
 from django.views.generic.edit import ModelFormMixin, UpdateView, DeleteView
-from django.contrib.auth.decorators import login_required
-from django.http import Http404
-from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
-from . import forms
-from . import models
+from .forms import TipForm, LogInForm, SignUpForm
+from .models import Tip, Vote
 
 
 class IndexView(ListView, ModelFormMixin):
 
-    model = models.Tip
+    model = Tip
     template_name = 'ex/index.html'
     context_object_name = 'tips'
-    form_class = forms.TipForm
+    form_class = TipForm
 
     def get(self, request, *args, **kwargs):
         self.object = None
@@ -44,57 +43,55 @@ class IndexView(ListView, ModelFormMixin):
 
 @login_required
 def upvote(request, tip_id):
-    tip = get_object_or_404(models.Tip, pk=tip_id)
-    messages.info(request, tip.upvote(request.user))
+    tip = get_object_or_404(Tip, pk=tip_id)
+    messages.info(request, tip.vote(request.user, Vote.UP))
     return redirect('index')
 
 
 @login_required
+@user_passes_test(
+    lambda user: user.profile.reputation >= 15)
 def downvote(request, tip_id):
-    tip = get_object_or_404(models.Tip, pk=tip_id)
-    messages.info(request, tip.downvote(request.user))
+    tip = get_object_or_404(Tip, pk=tip_id)
+    messages.info(request, tip.vote(request.user, Vote.DOWN))
     return redirect('index')
 
 
-class TipUpdateView(UpdateView):
+class TipUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
-    model = models.Tip
+    model = Tip
     fields = ['content']
     template_name_suffix = '_update_form'
     success_url = '/'
 
-    def dispatch(self, request, *args, **kwargs):
-        if self.get_object().author == request.user or request.user.is_staff:
-            return super(
-                TipUpdateView, self).dispatch(request, *args, **kwargs)
-        else:
-            raise Http404
+    def test_func(self):
+        return (self.request.user.profile.reputation >= 30
+            or self.request.user == self.get_object().author)
 
-class TipDeleteView(DeleteView):
 
-    model = models.Tip
+class TipDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+
+    model = Tip
     success_url = '/'
 
-    def dispatch(self, request, *args, **kwargs):
-        if self.get_object().author == request.user or request.user.is_staff:
-            return super(
-                TipDeleteView, self).dispatch(request, *args, **kwargs)
-        else:
-            raise Http404
+    def test_func(self):
+        return (self.request.user.profile.reputation >= 30
+            or self.request.user == self.get_object().author)
 
-class LoginView(FormView):
+
+class LogInView(FormView):
 
     template_name = 'ex/login.html'
-    form_class = forms.LoginForm
+    form_class = LogInForm
     success_url = '/'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('index')
-        return super(LoginView, self).get(request, *args, **kwargs)
+        return super(LogInView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(LoginView, self).get_context_data(**kwargs)
+        context = super(LogInView, self).get_context_data(**kwargs)
         return context
 
     def form_valid(self, form):
@@ -103,25 +100,25 @@ class LoginView(FormView):
             username=context.get('username'),
             password=context.get('password'))
         auth.login(self.request, user)
-        return super(LoginView, self).form_valid(form)
+        return super(LogInView, self).form_valid(form)
 
     def form_invalid(self, form):
-        return super(LoginView, self).form_invalid(form)
+        return super(LogInView, self).form_invalid(form)
 
 
-class SignupView(FormView):
+class SignUpView(FormView):
 
     template_name = 'ex/signup.html'
-    form_class = forms.SignupForm
+    form_class = SignUpForm
     success_url = '/'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('index')
-        return super(SignupView, self).get(request, *args, **kwargs)
+        return super(SignUpView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(SignupView, self).get_context_data(**kwargs)
+        context = super(SignUpView, self).get_context_data(**kwargs)
         return context
 
     def form_valid(self, form):
@@ -131,10 +128,10 @@ class SignupView(FormView):
             password=context.get('password1'))
         user.save()
         auth.login(self.request, user)
-        return super(SignupView, self).form_valid(form)
+        return super(SignUpView, self).form_valid(form)
 
     def form_invalid(self, form):
-        return super(SignupView, self).form_invalid(form)
+        return super(SignUpView, self).form_invalid(form)
 
 
 @login_required

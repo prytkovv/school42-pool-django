@@ -22,13 +22,14 @@
         {% if tips %}
             <h1 class="main-title">Published tips</h1>
                 {% for tip in tips %}
+                    {{ tip.id }}
                     <table class="table">
                       <thead class="thead-light">
                             <tr>
                                 <th class="left-side">
-                                    {{ tip.author }}
+                                    {{ tip.author }}({{ tip.author.profile.reputation }})
                                 </th>
-                                <th class="right-side"> {{ tip.date }} </th>
+                                <th class="right-side"> {{ tip.publication_date }} </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,13 +44,13 @@
                                     {% endif %}
                                     <a class="btn btn-success btn-sm custom-btn-size" href="{% url 'upvote' tip.id %}">
                                     +</a>
-                                    {{ tip.get_rating }}
+                                    {{ tip.score }}
                                     <a class="btn btn-danger btn-sm custom-btn-size" href="{% url 'downvote' tip.id %}">
                                         -</a>
                                 </td>
                                 <td> {{ tip.content }} </td>
                             </tr>
-                            {% if user == tip.author or user.is_staff %}
+                            {% if user == tip.author or user.profile.reputation >= 30 %}
                                 <tr>
                                     <td class="right-side" colspan="2">
                                             <a href="{% url 'edit' tip.id %}">edit</a>

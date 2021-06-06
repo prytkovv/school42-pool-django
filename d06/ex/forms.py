@@ -6,7 +6,7 @@ from django.contrib import auth
 from . import models
 
 
-class LoginForm(forms.Form):
+class LogInForm(forms.Form):
 
     username = forms.CharField(
         max_length=50,
@@ -26,7 +26,7 @@ class LoginForm(forms.Form):
         return context
 
 
-class SignupForm(forms.Form):
+class SignUpForm(forms.Form):
 
     username = forms.CharField(
         max_length=50,
