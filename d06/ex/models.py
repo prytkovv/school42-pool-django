@@ -16,28 +16,37 @@ class Tip(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def upvote(self, voter):
-        try:
-            vote = Vote.objects.create(
-                author=voter,
-                tip=self,
-                action=VOTE_ACTIONS['UP'])
-            self.votes.add(vote)
-            author_profile = self.author.profile
-            author_profile.reputation += 5
-            author_profile.save()
-        except IntegrityError:
-            vote = self.votes.get(
-                author=voter,
-                tip=self)
-            vote.delete()
-            return 'Voting canceled'
+        if self.votes.filter(action=VOTE_ACTIONS['DOWN']):
+            return 'You are already downvoted'
         else:
-            return 'Succesfully voted'
+            try:
+                vote = Vote.objects.create(
+                    user=voter,
+                    tip=self,
+                    action=VOTE_ACTIONS['UP'])
+                self.votes.add(vote)
+                author_profile = self.author.profile
+                author_profile.reputation += 5
+                author_profile.save()
+            except IntegrityError:
+                vote = self.votes.get(
+                    user=voter,
+                    tip=self,
+                    action=VOTE_ACTIONS['UP'])
+                author_profile = self.author.profile
+                author_profile.reputation -= 5
+                author_profile.save()
+                vote.delete()
+                return 'Voting canceled'
+            else:
+                return 'Succesfully voted'
 
     def downvote(self, voter):
+        if self.votes.filter(action=VOTE_ACTIONS['UP']):
+            return 'You are already upvoted'
         try:
             vote = Vote.objects.create(
-                author=voter,
+                user=voter,
                 tip=self,
                 action=VOTE_ACTIONS['DOWN'])
             self.votes.add(vote)
@@ -46,8 +55,12 @@ class Tip(models.Model):
             author_profile.save()
         except IntegrityError:
             vote = self.votes.get(
-                author=voter,
-                tip=self)
+                user=voter,
+                tip=self,
+                action=VOTE_ACTIONS['DOWN'])
+            author_profile = self.author.profile
+            author_profile.reputation += 2
+            author_profile.save()
             vote.delete()
             return 'Voting canceled'
         else:
@@ -64,7 +77,7 @@ class Tip(models.Model):
 
 class Vote(models.Model):
 
-    author = models.ForeignKey(
+    user = models.ForeignKey(
         User, on_delete=models.CASCADE)
     tip = models.ForeignKey(
         Tip, on_delete=models.CASCADE, related_name='votes')
@@ -75,7 +88,7 @@ class Vote(models.Model):
         return 'UP' if self.action else 'DOWN'
 
     class Meta:
-        unique_together = ('author', 'tip',)
+        unique_together = ('user', 'tip', 'action')
 
 
 class Profile(models.Model):
