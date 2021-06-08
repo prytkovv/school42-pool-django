@@ -3,6 +3,7 @@
 {% block title %}Create new article{% endblock %}
 
 {% block content %}
+    {% include 'navigation.html' %}
     <h1>Your article</h1>
     <form method="POST">
         {% csrf_token %}

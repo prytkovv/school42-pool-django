@@ -1,17 +1,28 @@
 from django.views.generic.list import ListView
-from django.views.generic import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect
 from django.contrib import auth
+from django.urls import reverse
 
 
 from .models import Article
-from .forms import LoginForm
 
 
 def index(request):
     return redirect('article-list')
+
+
+class LoginView(auth.views.LoginView):
+
+    template_name = 'admin/login.html'
+    extra_context = {
+        'title': 'Login',
+        'site_title': 'Articles',
+        'site_header': 'Login'}
+
+    def get_success_url(self):
+        return reverse('index')
 
 
 class ArticleListView(ListView):
@@ -19,39 +30,39 @@ class ArticleListView(ListView):
     model = Article
     context_object_name = 'articles'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(
-            ArticleListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['headlines'] = ('title', 'author', 'created', 'synopsis',)
         return context
 
 
-class LoginView(FormView):
+class PublicationListView(LoginRequiredMixin, ListView):
 
-    form_class = LoginForm
-    success_url = '/'
-    template_name = 'article/login.html'
+    model = Article
+    context_object_name = 'publications'
+    template_name = 'article/publication_list.html'
 
-    def form_valid(self, form):
-        context = form.cleaned_data
-        user = auth.authenticate(
-            username=context.get('username'),
-            password=context.get('password'))
-        auth.login(self.request, user)
-        return super().form_valid(form)
+    def get_queryset(self):
+        return super().get_queryset().filter(author=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['headlines'] = ('synopsis', 'created',)
+        return context
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
 
-    login_url = '/login/'
     model = Article
     fields = ('title', 'synopsis', 'content')
     template_name_suffix = '_create_form'
-    success_url = '/'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('index')
 
 
 def logout(request):

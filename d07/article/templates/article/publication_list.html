@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %}
 
-{% block title %} Articles {% endblock %}
+{% block title %}My publications{% endblock %}
 
 {% block style %}
     {% load static %}
@@ -8,26 +8,23 @@
 {% endblock %}
 
 {% block content %}
-    {% include "navigation.html" %}
-    {% if articles %}
-        <h1>Articles</h1>
+    {% include 'navigation.html' %}
+    {% if publications %}
+        <h1>My publications</h1>
         <table>
             <tr>
                 {% for headline in headlines %}
                     <th>{{ headline }}</th>
                 {% endfor %}
             </tr>
-            {% for article in articles %}
+            {% for publication in publications %}
                 <tr>
-                    <td> {{ article.title }}</td>
-                    <td> {{ article.author }}</td>
-                    <td> {{ article.created }}</td>
-                    <td> {{ article.synopsis }}</td>
+                    <td>{{ publication.synopsis }}</td>
+                    <td>{{ publication.created }}</td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
         <p>No data available</p>
     {% endif %}
-    <p><a href="{% url 'article-add' %}">Create article</a></p>
 {% endblock %}
