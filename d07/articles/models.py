@@ -20,5 +20,8 @@ class UserFavoriteArticle(models.Model):
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, related_name='favorite_article')
 
+    class Meta:
+        unique_together = ('user', 'article')
+
     def __str__(self):
         return self.article.title

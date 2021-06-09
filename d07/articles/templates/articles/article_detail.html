@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Article detail{% endblock %}
+
+{% block content %}
+    <h1> {{ article.title }}</h1>
+    <p> {{ article.content }}</p>
+    <p> {{ article.author }}</p>
+    <p> {{ article.created|date }}</p>
+{% endblock %}
