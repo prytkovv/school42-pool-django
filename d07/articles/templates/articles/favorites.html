@@ -3,6 +3,7 @@
 {% block title %}Favorites{% endblock %}
 
 {% block content %}
+    {% include "navigation.html" %}
     <h1>My favorite articles</h1>
     <ul>
         {% for favorite in favorites %}

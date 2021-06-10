@@ -1,7 +1,11 @@
 <nav>
-    Hello, {{ user }}!
     <ul>
+        <li><a href="{% url 'articles:index' %}">Home</a></li>
+        <li><a href="{% url 'articles:articles' %}">Articles</a></li>
         {% if user.is_authenticated %}
+            <li><a href="{% url 'articles:publications' %}">My publications</a></li>
+            <li><a href="{% url 'articles:favorites' %}">Favorites</a>
+            <li>Loged as {{ user }}</li>
             <li><a href="{% url 'accounts:logout' %}">log out</a></li>
         {% else %}
             <li><a href="{% url 'accounts:login' %}">log in</a></li>

@@ -18,10 +18,13 @@ class ArticleListView(ListView):
 
     model = Article
     context_object_name = 'articles'
+    queryset = Article.objects.order_by('created')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['headlines'] = ('title', 'author', 'synopsis', 'created',)
+        context['headlines'] = (
+            'title', 'author', 'synopsis',
+            'created', 'when')
         return context
 
 

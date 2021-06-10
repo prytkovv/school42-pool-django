@@ -3,6 +3,7 @@
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
+    {% include 'navigaition.html' %}
     <h1>Sign up</h1>
     <form method="POST">
         {% csrf_token %}

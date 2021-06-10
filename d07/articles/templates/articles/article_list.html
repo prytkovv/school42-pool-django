@@ -11,10 +11,6 @@
     {% include "navigation.html" %}
     {% if articles %}
         <h1>Articles</h1>
-        <ul>
-            <li><a href="{% url 'articles:publications' %}">My publications</a></li>
-            <li><a href="{% url 'articles:favorites' %}">Favorites</a>
-        </ul>
         <table>
             <tr>
                 {% for headline in headlines %}
@@ -24,9 +20,10 @@
             {% for article in articles %}
                 <tr>
                     <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></</td>
-                    <td> {{ article.author }}</td>
-                    <td> {{ article.synopsis }}</td>
-                    <td> {{ article.created }}</td>
+                    <td>{{ article.author }}</td>
+                    <td>{{ article.synopsis|truncatechars:20 }}</td>
+                    <td>{{ article.created }}</td>
+                    <td>{{ article.created|timesince }}</td>
                 </tr>
             {% endfor %}
         </table>
