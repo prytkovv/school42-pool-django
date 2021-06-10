@@ -18,7 +18,7 @@ class UserFavoriteArticle(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, related_name='favorite_article')
+        Article, on_delete=models.CASCADE, related_name='favorite')
 
     class Meta:
         unique_together = ('user', 'article')

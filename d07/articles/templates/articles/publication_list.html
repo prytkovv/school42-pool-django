@@ -9,7 +9,7 @@
 
 {% block content %}
     {% include 'navigation.html' %}
-    {% if publications %}
+    {% if articles %}
         <h1>My publications</h1>
         <table>
             <tr>
@@ -17,14 +17,16 @@
                     <th>{{ headline }}</th>
                 {% endfor %}
             </tr>
-            {% for publication in publications %}
+            {% for article in articles %}
                 <tr>
-                    <td>{{ publication.synopsis }}</td>
-                    <td>{{ publication.created }}</td>
+                    <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></td>
+                    <td>{{ article.synopsis }}</td>
+                    <td>{{ article.created }}</td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
         <p>No data available</p>
     {% endif %}
+    <p><a href="{% url 'articles:article_add' %}">Create article</a></p>
 {% endblock %}

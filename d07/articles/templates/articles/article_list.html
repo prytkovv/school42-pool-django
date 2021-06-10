@@ -11,6 +11,10 @@
     {% include "navigation.html" %}
     {% if articles %}
         <h1>Articles</h1>
+        <ul>
+            <li><a href="{% url 'articles:publications' %}">My publications</a></li>
+            <li><a href="{% url 'articles:favorites' %}">Favorites</a>
+        </ul>
         <table>
             <tr>
                 {% for headline in headlines %}
@@ -19,15 +23,14 @@
             </tr>
             {% for article in articles %}
                 <tr>
-                    <td> <a href="{% url 'articles:article-detail' article.pk %}">{{ article.title }}</a></td>
+                    <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></</td>
                     <td> {{ article.author }}</td>
-                    <td> {{ article.created }}</td>
                     <td> {{ article.synopsis }}</td>
+                    <td> {{ article.created }}</td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
         <p>No data available</p>
     {% endif %}
-    <p><a href="{% url 'articles:article-add' %}">Create article</a></p>
 {% endblock %}

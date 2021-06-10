@@ -6,5 +6,10 @@
     <h1> {{ article.title }}</h1>
     <p> {{ article.content }}</p>
     <p> {{ article.author }}</p>
-    <p> {{ article.created|date }}</p>
+    <p> {{ article.created }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type='submit' value='add to favorites'>
+    </form>
 {% endblock %}
