@@ -23,8 +23,8 @@ class ArticleListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['headlines'] = (
-            'title', 'author', 'synopsis',
-            'created', 'when')
+            'Title', 'Synopsis', 'Author',
+            'Created', 'When', '')
         return context
 
 
@@ -83,7 +83,7 @@ class PublicationListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['headlines'] = ('title', 'synopsis', 'created',)
+        context['headlines'] = ('Title', 'Synopsis', 'Created', '')
         return context
 
 
@@ -92,6 +92,12 @@ class UserFavoriteArticleListView(LoginRequiredMixin, ListView):
     model = UserFavoriteArticle
     context_object_name = 'favorites'
     template_name = 'articles/favorites.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['headlines'] = (
+            'Title', 'Synopsis', 'Author', '')
+        return context
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)

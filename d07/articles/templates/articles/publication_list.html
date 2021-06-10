@@ -2,31 +2,32 @@
 
 {% block title %}My publications{% endblock %}
 
-{% block style %}
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'articles/style.css' %}">
-{% endblock %}
-
 {% block content %}
-    {% include 'navigation.html' %}
-    {% if articles %}
-        <h1>My publications</h1>
-        <table>
-            <tr>
-                {% for headline in headlines %}
-                    <th>{{ headline }}</th>
-                {% endfor %}
-            </tr>
-            {% for article in articles %}
-                <tr>
-                    <td><a href="{% url 'articles:article_detail' article.pk %}">{{ article.title }}</a></td>
-                    <td>{{ article.synopsis }}</td>
-                    <td>{{ article.created }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No data available</p>
-    {% endif %}
-    <p><a href="{% url 'articles:article_add' %}">Create article</a></p>
+    <div class="container">
+        {% if articles %}
+            <h1 class="text-center pb-4">My publications</h1>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        {% for headline in headlines %}
+                            <th>{{ headline }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.title }}</td>
+                            <td>{{ article.synopsis }}</td>
+                            <td>{{ article.created }}</td>
+                            <td class="text-right"><a class="btn btn-info" href="{% url 'articles:article_detail' article.pk %}">Read</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No data available</p>
+        {% endif %}
+        <p><a class="btn btn-success" href="{% url 'articles:article_add' %}">Create article</a></p>
+    </div>
 {% endblock %}

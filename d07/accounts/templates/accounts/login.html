@@ -2,12 +2,40 @@
 
 {% block title %}Login{% endblock %}
 
+{% block style %}
+    <style>
+    .login-form {
+    width: 360px;
+    margin: 120px auto;
+    }
+    .login-form form {
+        background: #FAFAFA;
+        margin-bottom: 15px;
+        padding: 30px;
+    }
+    .login-form h2 {
+        margin: 0 0 15px;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .btn {        
+        font-size: 15px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    {% include "navigation.html" %}
-    <h1>Log in</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value='log in'>
-    </form>
+    {% load bootstrap4 %}
+    <div class="login-form">
+        <form method="POST">
+            <h2 class="text-center">Log in</h2>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" class="btn btn-success btn-block" value="Log in">
+        </form>
+        <p class="text-center"><a href="{% url 'accounts:signup' %}">Create an Account</a></p>
+    </div>
 {% endblock %}

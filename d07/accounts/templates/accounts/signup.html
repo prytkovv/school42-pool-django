@@ -2,12 +2,40 @@
 
 {% block title %}Sign up{% endblock %}
 
+{% block style %}
+    <style>
+    .signup-form {
+    width: 480px;
+    margin: 80px auto;
+    }
+    .signup-form form {
+        background: #FAFAFA;
+        margin-bottom: 15px;
+        padding: 30px;
+    }
+    .signup-form h2 {
+        margin: 0 0 15px;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .btn {        
+        font-size: 15px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    {% include 'navigaition.html' %}
-    <h1>Sign up</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value='create account'>
-    </form>
+    {% load bootstrap4 %}
+    <div class="signup-form">
+        <form method="POST">
+            <h2 class="text-center">Sign up</h2>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" class="btn btn-success btn-block" value='Create account'>
+        </form>
+        <p class="text-center"><a href="{% url 'accounts:login' %}">Already have an account?</a></p>
+    </div>
 {% endblock %}

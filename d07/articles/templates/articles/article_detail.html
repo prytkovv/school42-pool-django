@@ -3,14 +3,15 @@
 {% block title %}Article detail{% endblock %}
 
 {% block content %}
-    {% include "navigation.html" %}
-    <h1> {{ article.title }}</h1>
-    <p> {{ article.content }}</p>
-    <p> {{ article.author }}</p>
-    <p> {{ article.created }}</p>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type='submit' value='add to favorites'>
-    </form>
+    <div class="container">
+        <h1> {{ article.title }}</h1>
+        <p> {{ article.content }}</p>
+        <p> {{ article.author }}</p>
+        <p> {{ article.created }}</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn btn-success btn-sm" type="submit" value="Add to favorites">
+        </form>
+    </div>}
 {% endblock %}

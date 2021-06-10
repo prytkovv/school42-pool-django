@@ -3,13 +3,30 @@
 {% block title %}Favorites{% endblock %}
 
 {% block content %}
-    {% include "navigation.html" %}
-    <h1>My favorite articles</h1>
-    <ul>
-        {% for favorite in favorites %}
-            <li><a href="{% url 'articles:article_detail' favorite.article.pk %}">{{ favorite }}</a></li>
-        {% empty %}
-            <li>No data available</li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        {% if favorites %}
+            <h1 class="text-center pb-4">My favorite articles</h1>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        {% for headline in headlines %}
+                            <th>{{ headline }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for favorite in favorites %}
+                        <tr>
+                            <td>{{ favorite.article.title }}</td>
+                            <td>{{ favorite.article.synopsis }}</td>
+                            <td>{{ favorite.article.author }}</td>
+                            <td class="text-right"><a class="btn btn-info" href="{% url 'articles:article_detail' favorite.article.pk %}">Read</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No data available</p>
+        {% endif %}
+    </div>
 {% endblock %}

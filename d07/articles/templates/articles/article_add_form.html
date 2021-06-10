@@ -3,11 +3,13 @@
 {% block title %}Create new article{% endblock %}
 
 {% block content %}
-    {% include 'navigation.html' %}
-    <h1>Your article</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="save">
-    </form>
+    {% load bootstrap4 %}
+    <div class="container">
+        <h1 class="text-center">Your article</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input class="btn btn-success" type="submit" value="Save">
+        </form>
+    </div>
 {% endblock %}

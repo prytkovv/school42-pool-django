@@ -5,9 +5,18 @@
         {% block title %}{% endblock %}
     </title>
     {% block style %}
+        <style>
+            body { padding-top: 70px; }
+        </style>
     {% endblock %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {% bootstrap_messages %}
 </head>
     <body>
+        {% include "navigation.html" %}
+
         {% block content %}{% endblock %}
     </body>
 </html>
