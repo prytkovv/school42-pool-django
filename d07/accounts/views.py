@@ -10,6 +10,11 @@ class SignupView(CreateView):
     form_class = UserCreationForm
     template_name = 'accounts/signup.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('articles:index')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('articles:index')
 
@@ -17,6 +22,11 @@ class SignupView(CreateView):
 class LoginView(auth.views.LoginView):
 
     template_name = 'accounts/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('articles:index')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('articles:index')
