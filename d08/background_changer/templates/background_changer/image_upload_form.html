@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Change your background{% endblock %}
+
+{% load static %}
+
+{% block style %}
+     <style>
+        body {
+            {% if background_image %}
+            background-image: url({{ background_image.upload.url }});
+            background-repeat: no-repeat;
+            background-size: cover;
+            {% endif %}
+        }
+        .upload-form {
+            width: 400px;
+            margin: 120px auto;
+        }
+        .upload-form form {
+            background: #FAFAFA;
+            margin-bottom: 15px;
+            padding: 30px;
+        }
+        .upload-form h2 {
+            margin: 0 0 15px;
+        }
+        .form-control, .btn {
+            min-height: 38px;
+            border-radius: 2px;
+        }
+        .btn {        
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% load bootstrap4 %}
+    <div class='upload-form'>
+        <form method="POST" enctype="multipart/form-data">
+            <h2>Upload an image to change the background now!</h2>
+            {% csrf_token %}
+            {% bootstrap_form form  layout='inline' %}
+            <input class="btn btn-success btn-block" type="submit" value="Upload">
+        </form>
+    </div>
+{% endblock %}
