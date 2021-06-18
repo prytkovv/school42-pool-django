@@ -1,6 +1,4 @@
-from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
-from django.views import View
 from django.urls import reverse
 
 from .models import Image
@@ -25,4 +23,3 @@ class ImageUploadView(CreateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
-
