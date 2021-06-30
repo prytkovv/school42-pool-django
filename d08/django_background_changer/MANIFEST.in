@@ -1,4 +1,5 @@
 include LICENSE
 include README.rst
+recursive-include background_changer/static *
 recursive-include background_changer/templates *
 recursive-include background_changer/media *
