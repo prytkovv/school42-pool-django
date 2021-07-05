@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %}</title>
+        {% load bootstrap4 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript jquery='full' %}
+        {% bootstrap_messages %}
+        {% block style %}{% endblock %}
+    </head>
+    <body style="padding-top:70px">
+        {% include "nav.html" %}
+        {% block content %} {% endblock %}
+        {% block javascript %}{% endblock %}
+    </body>
+</html>

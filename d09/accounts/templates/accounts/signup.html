@@ -1,0 +1,55 @@
+{% extends "base_generic.html" %}
+
+{% block javascript %}
+    <script>
+        function validate_username() {
+            let username = $("#id_username").val();
+            $.ajax({
+                url: "{% url 'accounts:validate_username' %}",
+                data: {
+                    "username": username,
+                },
+                dataType: "json",
+                success: function(data) {
+                    if (data.exists) {
+                        $("#username-error").html("A user with that username already exists.");
+                    }
+                    else {
+                        $("#username-error").html("");
+                    }
+                },
+                error: function(data) {
+                    alert("An unknown error occured");
+                }
+            });
+        }
+        function validate_password() {
+            let password1 = $("#id_password1").val();
+            let password2 = $("#id_password2").val();
+            if (password1 !== password2) {
+                $("#password-error").html("<p>Password mismatch</p>");
+            }
+            else {
+                $("#password-error").html("");
+            }
+
+        }
+        $("id_password1, #id_password2").on("keyup", validate_password);
+        $("#id_username").change(validate_username);
+    </script>
+{% endblock %}
+
+{% block style %}
+    {% load bootstrap4 %}
+    <div class="container">
+        <div class="signup-form">
+            <div id="username-error"></div>
+            <div id="password-error"></div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Sign up</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
